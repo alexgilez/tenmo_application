@@ -3,9 +3,11 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.UserNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.SqlInOutParameter;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -33,8 +35,17 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     public List<Integer> getTransferToAccounts(int userId) {
+        List<Integer> availableAccounts = new ArrayList<>();
 
-        String sql = "SELECT account_id FROM tenmo_account WHERE user_id <> account_id;";}
+        String sql = "SELECT account_id FROM tenmo_account WHERE user_id <> ?;";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+        while (results.next()) {
+            availableAccounts.add(results.getInt("account_id"));
+        }
+        return availableAccounts;
+
+    }
 
 
 
