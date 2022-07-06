@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 public class AccountService {
 
     private final RestTemplate restTemplate = new RestTemplate();
+    private Account currentUser;
 
     private static final String API_BASE_URL = "http://localhost:8080";
 
@@ -21,25 +22,31 @@ public class AccountService {
         this.authToken = authToken;
     }
 
-    public double viewCurrentBalance(User id) {
+    public double getCurrentBalance() {
 
         double balance = 0;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);
-        HttpEntity entity = new HttpEntity<>(id, headers);
+        HttpEntity entity = new HttpEntity<>(currentUser.getAccountId(), headers);
+
 
         try {
             ResponseEntity<Account> response =
-                    restTemplate.exchange(API_BASE_URL + "/balance/" + id, HttpMethod.GET, entity, Account.class);
+                    restTemplate.exchange(API_BASE_URL + "/"  + currentUser.getAccountId() + "/balance", HttpMethod.GET, entity, Account.class);
             Account user = response.getBody();
             if (user != null) {
                 balance = user.getBalance();
+                System.out.println("Current balance is: $ " + balance);
             }
-        } catch (RestClientResponseException | ResourceAccessException e) {
+        } catch (RestClientResponseException | ResourceAccessException | NullPointerException e   ) {
             BasicLogger.log(e.getMessage());
         }
+        if (balance != 0){
+
+        }
+
 
         return balance;
     }
