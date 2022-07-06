@@ -25,17 +25,23 @@ public class AccountController {
     }
 
     @RequestMapping(path = "{userId}/{id}/balance", method = RequestMethod.GET)
-    public double getBalance(@Valid @PathVariable int userId, @PathVariable int id, Principal user){
+    public double getBalance(@Valid @PathVariable int userId, @PathVariable int accountId, Principal user){
         String username = user.getName();
         this.userDao.findIdByUsername(username);
-        double balance = accountDao.getBalance(userId, id);
+        double balance = accountDao.getBalance(userId, accountId);
         return balance;
     }
 
-    @RequestMapping(path = "{userId}", method = RequestMethod.GET)
-    public List<Integer> listAvailableAccounts(@Valid @PathVariable int userId) {
+    @RequestMapping(path = "{userId}/accounts", method = RequestMethod.GET)
+    public List<Integer> listAvailableAccounts(@Valid @PathVariable int userId, Principal user) {
+        String username = user.getName();
+        this.userDao.findIdByUsername(username);
+        List<Integer> available = accountDao.getTransferToAccounts(userId);
 
+        return available;
     }
+
+
     //Number 4
     // step one -- reveal list of account_id's to send
     //amount to
