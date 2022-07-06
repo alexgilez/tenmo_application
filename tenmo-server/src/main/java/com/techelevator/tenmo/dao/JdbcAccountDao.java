@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class JdbcAccountDao implements AccountDao {
     private final JdbcTemplate jdbcTemplate;
@@ -15,13 +17,13 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public double getBalance(int accountId) {
-        String sql = "SELECT balance FROM account WHERE account_id = ?";
-        SqlRowSet results = null;
+    public double getBalance(int userId, int accountId) {
         double balance = 0;
 
+        String sql = "SELECT balance FROM tenmo_account WHERE user_id = ? AND account_id = ?;";
+
         try {
-            results = jdbcTemplate.queryForRowSet(sql, accountId);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, accountId);
             if (results.next()) {
                 balance = results.getDouble("balance");
             }
@@ -29,5 +31,11 @@ public class JdbcAccountDao implements AccountDao {
             System.out.println("User not found.");
         } return balance;
     }
+
+    public List<Integer> getTransferToAccounts(int userId) {
+
+        String sql = "SELECT account_id FROM tenmo_account WHERE user_id <> account_id;";}
+
+
 
 }

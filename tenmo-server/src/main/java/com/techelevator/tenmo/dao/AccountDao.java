@@ -1,6 +1,6 @@
 package com.techelevator.tenmo.dao;
 
 public interface AccountDao {
-    double getBalance(int accountId);
+    double getBalance(int userId, int accountId);
 
 }
