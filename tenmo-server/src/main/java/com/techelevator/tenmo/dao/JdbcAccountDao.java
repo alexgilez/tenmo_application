@@ -38,12 +38,12 @@ public class JdbcAccountDao implements AccountDao {
     public List<Integer> getTransferToAccounts(int userId) {
         List<Integer> availableAccounts = new ArrayList<>();
 
-        String sql = "SELECT account_id FROM tenmo_account WHERE user_id <> ?;";
+        String sql = "SELECT user_id FROM tenmo_account WHERE user_id <> ?;";
 
         try {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
             while (results.next()) {
-                availableAccounts.add(results.getInt("account_id"));
+                availableAccounts.add(results.getInt("user_id"));
             }
         } catch (UserNotFoundException ex){
             System.out.println("User not found.");
