@@ -20,6 +20,22 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
+    public String getNameById(int user_id) {
+        String receivedName = "";
+
+        String sql = "SELECT username FROM tenmo_user WHERE user_id = ?;";
+
+        try {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, user_id);
+            if (results.next()) {
+                receivedName = results.getString("username");
+            }
+        } catch (UserNotFoundException ex) {
+            System.out.println("User not found.");
+        } return receivedName;
+    }
+
+    @Override
     public double getBalance(int userId) {
         double balance = 0;
 
@@ -34,6 +50,7 @@ public class JdbcAccountDao implements AccountDao {
             System.out.println("User not found.");
         } return balance;
     }
+
     @Override
     public List<Integer> getTransferToAccounts() {
         List<Integer> availableAccounts = new ArrayList<>();
@@ -74,24 +91,23 @@ public class JdbcAccountDao implements AccountDao {
 
 
 
-
-
     @Override
-    public String sendTransfer(int userFrom, int userTo, double amount){
-        if (userFrom == userTo){
+    public void rejectTransferWithSameId(int userFrom, int userTo, double amount){
 
             String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
                     "VALUES (2, 3, ?, ?, ?);";
 
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userFrom, userTo, amount);
+            Integer newId = jdbcTemplate.queryForObject(sql, Integer.class, userFrom, userTo, amount);
 
-            return "Cannot send money to your own account";
         }
+
+    @Override
+    public void sendTransfer(int userFrom, int userTo, double amount){
 
         String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
                         "VALUES (2, 2, ?, ?, ?);";
 
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userFrom, userTo, amount);
+        Integer newId = jdbcTemplate.queryForObject(sql, Integer.class, userFrom, userTo, amount);
 
         if (amount <= accountDao.getBalance(userFrom)) {
 
@@ -107,6 +123,5 @@ public class JdbcAccountDao implements AccountDao {
 
         jdbcTemplate.update(sql, amount, userTo);
     }
-        return "Transfer approved.";
     }
 }

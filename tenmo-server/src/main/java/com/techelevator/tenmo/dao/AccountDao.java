@@ -6,11 +6,15 @@ import java.util.List;
 
 public interface AccountDao {
 
+    String getNameById(int userId);
+
     double getBalance(int userId);
 
     List<Integer> getTransferToAccounts();
 
-    String sendTransfer(int userFrom, int userTo, double amount);
+    void sendTransfer(int userFrom, int userTo, double amount);
+
+    void rejectTransferWithSameId(int userFrom, int userTo, double amount);
 
 
 

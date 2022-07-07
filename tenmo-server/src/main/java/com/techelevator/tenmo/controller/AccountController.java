@@ -43,15 +43,29 @@ public class AccountController {
         return available;
     }
 
-    /*
-    @RequestMapping(path = "{userId}", method = RequestMethod.PUT)
-    public double executeTransfer(@Valid @PathVariable int userId, Principal user) {
+
+    @RequestMapping(path = "transfer/{userIdA}/{userIdB}/{transferAmount}", method = RequestMethod.PUT)
+    public String executeTransfer(@Valid @PathVariable int userIdA, @Valid @PathVariable int userIdB,
+                                        double transferAmount, Principal user) {
         String username = user.getName();
         this.userDao.findIdByUsername(username);
-        double balance = accountDao.getBalance(userId);
-
+        double balance = accountDao.getBalance(userIdA);
+        String validName = accountDao.getNameById(userIdA);
+        if (username.equals(validName)) {
+            return "breh...you know what you did...";
+            if (userIdA == userIdB) {
+                accountDao.rejectTransferWithSameId(userIdA, userIdB, transferAmount);
+                if ((transferAmount > 0) && (transferAmount < balance)) {
+                    accountDao.sendTransfer(userIdA, userIdB, transferAmount);
+                    balance -= transferAmount;
+                } else {
+                    return "breh...you know what you did...";
+                }
+            }
+        }
+        return "Your new balance is: " + balance;
     }
-     */
+
 
 
     //Number 4
