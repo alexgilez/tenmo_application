@@ -1,5 +1,6 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
@@ -87,7 +88,7 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        consoleService.promptForString("Enter Account ID of the Account balance you would like to view: ");
+        consoleService.promptForString("Enter User ID of the Account balance you would like to view: ");
 
 		try {
             accountService.getCurrentBalance();
@@ -108,7 +109,9 @@ public class App {
 	}
 
 	private void sendBucks() {
-
+        Account[] accts = accountService.listTransferToAccounts();
+        System.out.println(accts);
+        consoleService.promptForString("Enter User ID of the Account balance you would like to send your fake money to: ");
 		
 	}
 

@@ -2,6 +2,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.UserDao;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,19 +25,19 @@ public class AccountController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(path = "{userId}/{accountId}/balance", method = RequestMethod.GET)
-    public double getBalance(@Valid @PathVariable int userId, @PathVariable int accountId, Principal user){
+    @RequestMapping(path = "/balance", method = RequestMethod.GET)
+    public double getBalance(@Valid @PathVariable int userId, Principal user){
         String username = user.getName();
         this.userDao.findIdByUsername(username);
         double balance = accountDao.getBalance(userId);
         return balance;
     }
 
-    @RequestMapping(path = "{userId}/accounts", method = RequestMethod.GET)
-    public List<Integer> listAvailableAccounts(@Valid @PathVariable int userId, Principal user) {
+    @RequestMapping(path = "/account", method = RequestMethod.GET)
+    public List<Integer> listAvailableAccounts(Principal user) {
         String username = user.getName();
         this.userDao.findIdByUsername(username);
-        List<Integer> available = accountDao.getTransferToAccounts(userId);
+        List<Integer> available = accountDao.getTransferToAccounts();
 
 
         return available;

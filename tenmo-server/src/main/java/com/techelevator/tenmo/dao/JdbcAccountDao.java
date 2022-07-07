@@ -35,13 +35,13 @@ public class JdbcAccountDao implements AccountDao {
         } return balance;
     }
     @Override
-    public List<Integer> getTransferToAccounts(int userId) {
+    public List<Integer> getTransferToAccounts() {
         List<Integer> availableAccounts = new ArrayList<>();
 
-        String sql = "SELECT user_id FROM tenmo_account WHERE user_id <> ?;";
+        String sql = "SELECT user_id FROM tenmo_user;";
 
         try {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
             while (results.next()) {
                 availableAccounts.add(results.getInt("user_id"));
             }

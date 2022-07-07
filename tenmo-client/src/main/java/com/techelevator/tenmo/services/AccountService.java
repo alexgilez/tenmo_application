@@ -32,12 +32,12 @@ public class AccountService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);
-        HttpEntity entity = new HttpEntity<>(currentUser.getAccountId(), headers);
+        HttpEntity entity = new HttpEntity<>(headers);
 
 
         try {
             ResponseEntity<Account> response =
-                    restTemplate.exchange(API_BASE_URL + "/"  + currentUser.getAccountId() + "/balance", HttpMethod.GET, entity, Account.class);
+                    restTemplate.exchange(API_BASE_URL + "/balance", HttpMethod.GET, entity, Account.class);
             Account user = response.getBody();
             if (user != null) {
                 balance = user.getBalance();
@@ -52,32 +52,70 @@ public class AccountService {
         return balance;
     }
 
-    /*
-    public List<Integer> listTransferToAccounts() {
+    public String makeTransfer(double transferAmount, int recipientId) {
 
-        List<Integer> availableAccounts = new ArrayList<>();
+        double balance = 0;
+        double balanceA = 0;
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);
         HttpEntity entity = new HttpEntity<>(currentUser.getAccountId(), headers);
 
-
         try {
             ResponseEntity<Account> response =
-                    restTemplate.exchange(API_BASE_URL + "/account" , HttpMethod.GET, entity, Account.class);
-            Account users = response.getBody();
-            if (users != null) {
-                while ()
-                availableAccounts.add(users.getAccountId());
-                availableAccounts.remove(currentUser.getAccountId());
+                    restTemplate.exchange(API_BASE_URL + "/" + currentUser.getAccountId() + "/balance", HttpMethod.PUT, entity, Account.class);
+            Account user = response.getBody();
+            if (user != null) {
+                balance = user.getBalance();
+                balance -= transferAmount;
+                user.setBalance(balance);
             }
-        } catch (RestClientResponseException | ResourceAccessException | NullPointerException e   ) {
+        } catch (RestClientResponseException | ResourceAccessException | NullPointerException e) {
+            BasicLogger.log(e.getMessage());
+        }
+
+        HttpHeaders headersA = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+        HttpEntity entityA = new HttpEntity<>(recipientId, headersA);
+
+        try {
+            ResponseEntity<Account> responseA =
+                    restTemplate.exchange(API_BASE_URL + "/" + recipientId + "/balance", HttpMethod.PUT, entityA, Account.class);
+            Account userA = responseA.getBody();
+            if (userA != null) {
+                balanceA = userA.getBalance();
+                balanceA += transferAmount;
+                userA.setBalance(balanceA);
+            }
+        } catch (RestClientResponseException | ResourceAccessException | NullPointerException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return "Your new balance is " + balance;
+    }
+
+
+    public Account[] listTransferToAccounts() {
+
+        Account[] availableAccounts = null;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+        HttpEntity entity = new HttpEntity<>(headers);
+
+
+        try {
+            ResponseEntity<Account[]> response =
+                    restTemplate.exchange(API_BASE_URL + "/account" , HttpMethod.GET, entity, Account[].class);
+            availableAccounts = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException | NullPointerException e) {
             BasicLogger.log(e.getMessage());
         }
         return availableAccounts;
     }
-    */
+
 
 
 
