@@ -24,11 +24,11 @@ public class AccountController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(path = "{userId}/{id}/balance", method = RequestMethod.GET)
+    @RequestMapping(path = "{userId}/{accountId}/balance", method = RequestMethod.GET)
     public double getBalance(@Valid @PathVariable int userId, @PathVariable int accountId, Principal user){
         String username = user.getName();
         this.userDao.findIdByUsername(username);
-        double balance = accountDao.getBalance(userId, accountId);
+        double balance = accountDao.getBalance(userId);
         return balance;
     }
 
@@ -38,8 +38,19 @@ public class AccountController {
         this.userDao.findIdByUsername(username);
         List<Integer> available = accountDao.getTransferToAccounts(userId);
 
+
         return available;
     }
+
+    /*
+    @RequestMapping(path = "{userId}", method = RequestMethod.PUT)
+    public double executeTransfer(@Valid @PathVariable int userId, Principal user) {
+        String username = user.getName();
+        this.userDao.findIdByUsername(username);
+        double balance = accountDao.getBalance(userId);
+
+    }
+     */
 
 
     //Number 4

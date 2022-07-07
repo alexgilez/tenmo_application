@@ -9,6 +9,9 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AccountService {
 
     private final RestTemplate restTemplate = new RestTemplate();
@@ -46,9 +49,44 @@ public class AccountService {
         if (balance != 0){
 
         }
-
-
         return balance;
     }
+
+    /*
+    public List<Integer> listTransferToAccounts() {
+
+        List<Integer> availableAccounts = new ArrayList<>();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(authToken);
+        HttpEntity entity = new HttpEntity<>(currentUser.getAccountId(), headers);
+
+
+        try {
+            ResponseEntity<Account> response =
+                    restTemplate.exchange(API_BASE_URL + "/account" , HttpMethod.GET, entity, Account.class);
+            Account users = response.getBody();
+            if (users != null) {
+                while ()
+                availableAccounts.add(users.getAccountId());
+                availableAccounts.remove(currentUser.getAccountId());
+            }
+        } catch (RestClientResponseException | ResourceAccessException | NullPointerException e   ) {
+            BasicLogger.log(e.getMessage());
+        }
+        return availableAccounts;
+    }
+    */
+
+
+
+    /*
+    private HttpEntity<Void> makeAuthEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(headers);
+    }
+    */
 
 }
