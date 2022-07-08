@@ -97,74 +97,43 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public void rejectTransferWithSameId(int accountFrom, int accountTo, double amount){
 
-            String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
+            String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "VALUES (2, 3, ?, ?, ?);";
 
-            jdbcTemplate.update(sql, Integer.class, accountFrom, accountTo, amount);
+            jdbcTemplate.update(sql, accountFrom, accountTo, amount);
+
 
 
         }
 
     @Override
-    public void sendTransfer(int accountFrom, int accountTo, double amount){
+    public void sendTransfer(int accountFrom, int accountTo, double amount) {
 
-        String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
-                        "VALUES (2, 2, ?, ?, ?);";
+        String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (2, 2, ?, ?, ?);";
 
         jdbcTemplate.update(sql, accountFrom, accountTo, amount);
 
         if (amount <= getBalance(accountFrom)) {
 
-        sql = "UPDATE tenmo_account " +
-                        "SET balance = balance - ? " +
-                        "WHERE account_id = ?;";
+            sql = "UPDATE tenmo_account " +
+                    "SET balance = balance - ? " +
+                    "WHERE account_id = ?;";
 
-        jdbcTemplate.update(sql, amount, accountFrom);
+            jdbcTemplate.update(sql, amount, accountFrom);
 
-        sql = "UPDATE tenmo_account " +
-                "SET balance = balance + ? " +
-                "WHERE account_id = ?;";
+            sql = "UPDATE tenmo_account " +
+                    "SET balance = balance + ? " +
+                    "WHERE account_id = ?;";
 
-        jdbcTemplate.update(sql, amount, accountTo);
-    }
-
-    }
-
-    @Override
-    public List<Transfer> listTransfers(int userId) {
-
-        List<Transfer> transfers = new ArrayList<>();
-
-        String sql = "SELECT * " +
-                "FROM tenmo_transfer " +
-                "JOIN tenmo_account ON tenmo_transfer.account_from = tenmo_account.account_id " +
-                "WHERE user_id = ?;";
-
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
-
-        while(results.next()) {
-            transfers.add(mapRowToTransfer(results));
+            jdbcTemplate.update(sql, amount, accountTo);
         }
-        return transfers;
     }
-
     @Override
-    public Transfer mapRowToTransfer(SqlRowSet rowSet) {
-
-        Transfer transfer = new Transfer();
-
-        transfer.setTransferId(rowSet.getInt("transfer_id"));
-        transfer.setTransferTypeId(rowSet.getInt("transfer_type_id"));
-        transfer.setTransferStatusId(rowSet.getInt("transfer_status_id"));
-        transfer.setAccountFrom(rowSet.getInt("account_from"));
-        transfer.setAccountTo(rowSet.getInt("account_to"));
-        transfer.setAmount(rowSet.getDouble("amount"));
-        transfer.setAccountId(rowSet.getInt("account_id"));
-        transfer.setUserId(rowSet.getInt("user_id"));
-        transfer.setBalance(rowSet.getDouble("balance"));
-
-        return transfer;
-
+    public int getUserId(int accountId){
+            String sql = "SELECT user_id FROM tenmo_account WHERE account_id = ?;";
+            int result = jdbcTemplate.queryForObject(sql, Integer.class, accountId);
+        return result;
 
     }
 }

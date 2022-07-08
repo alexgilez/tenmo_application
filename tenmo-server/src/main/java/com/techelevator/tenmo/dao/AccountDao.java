@@ -1,8 +1,5 @@
 package com.techelevator.tenmo.dao;
 
-import com.techelevator.tenmo.model.Transfer;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-
 import java.util.List;
 
 public interface AccountDao {
@@ -17,8 +14,7 @@ public interface AccountDao {
 
     void rejectTransferWithSameId(int accountFrom, int accountTo, double amount);
 
-
     List<Transfer> listTransfers(int userId);
 
-    Transfer mapRowToTransfer(SqlRowSet rowSet);
+    int getUserId(int accountId);
 }

@@ -53,15 +53,18 @@ public class AccountController {
         double balance = accountDao.getBalance(accountIdA);
         String validName = accountDao.getNameById(accountIdA);
         if (!username.equals(validName)) {
-            return "error message 1";
+            return "You must use your own Account ID.";
         } else if (accountIdA == accountIdB) {
-            accountDao.rejectTransferWithSameId(accountIdA, accountIdB, transferAmount);
         } else if ((transferAmount > 0) && (transferAmount < balance)) {
                     accountDao.sendTransfer(accountIdA, accountIdB, transferAmount);
                     balance -= transferAmount;
-                    return "Your new balance is: " + balance;
+                    int userIdA = accountDao.getUserId(accountIdA);
+                    int userIdB = accountDao.getUserId(accountIdB);
+                    return "User " + userIdA + " sent $" + transferAmount + " to User " + userIdB + ".\n" + userIdA + ", your new balance is: $" + balance;
+        } else {
+            return "Insufficient funds or invalid amount";
         }
-        return "breh...you know what you did...";
+        return "breh...you know what you did... you can't send money to yourself";
     }
 
     @RequestMapping(path = "transfer/{userId}", method = RequestMethod.GET)
