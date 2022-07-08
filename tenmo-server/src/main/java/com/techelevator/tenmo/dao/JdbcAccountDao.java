@@ -134,6 +134,42 @@ public class JdbcAccountDao implements AccountDao {
             String sql = "SELECT user_id FROM tenmo_account WHERE account_id = ?;";
             int result = jdbcTemplate.queryForObject(sql, Integer.class, accountId);
         return result;
+    }
 
+    @Override
+    public List<Transfer> listTransfers(int userId) {
+
+        List<Transfer> transfers = new ArrayList<>();
+
+        String sql = "SELECT * " +
+                "FROM tenmo_transfer " +
+                "JOIN tenmo_account ON tenmo_transfer.account_from = tenmo_account.account_id " +
+                "WHERE user_id = ?;";
+
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
+
+        while(results.next()) {
+            transfers.add(mapRowToTransfer(results));
+        }
+        return transfers;
+    }
+
+
+    @Override
+    public Transfer mapRowToTransfer(SqlRowSet rowSet) {
+
+        Transfer transfer = new Transfer();
+
+        transfer.setTransferId(rowSet.getInt("transfer_id"));
+        transfer.setTransferTypeId(rowSet.getInt("transfer_type_id"));
+        transfer.setTransferStatusId(rowSet.getInt("transfer_status_id"));
+        transfer.setAccountFrom(rowSet.getInt("account_from"));
+        transfer.setAccountTo(rowSet.getInt("account_to"));
+        transfer.setAmount(rowSet.getDouble("amount"));
+        transfer.setAccountId(rowSet.getInt("account_id"));
+        transfer.setUserId(rowSet.getInt("user_id"));
+        transfer.setBalance(rowSet.getDouble("balance"));
+
+        return transfer;
     }
 }
