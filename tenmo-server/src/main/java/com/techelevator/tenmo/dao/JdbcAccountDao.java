@@ -13,7 +13,7 @@ import java.util.List;
 @Component
 public class JdbcAccountDao implements AccountDao {
     private final JdbcTemplate jdbcTemplate;
-    private AccountDao accountDao;
+
 
     public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -94,39 +94,45 @@ public class JdbcAccountDao implements AccountDao {
 
 
     @Override
-    public int rejectTransferWithSameId(int accountFrom, int accountTo, double amount){
+    public void rejectTransferWithSameId(int accountFrom, int accountTo, double amount){
 
-            String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
+            String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                     "VALUES (2, 3, ?, ?, ?);";
 
-            Integer newId = jdbcTemplate.queryForObject(sql, Integer.class, accountFrom, accountTo, amount);
+            jdbcTemplate.update(sql, accountFrom, accountTo, amount);
 
-            return newId;
+
 
         }
 
     @Override
-    public int sendTransfer(int accountFrom, int accountTo, double amount){
+    public void sendTransfer(int accountFrom, int accountTo, double amount) {
 
-        String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount)" +
-                        "VALUES (2, 2, ?, ?, ?);";
+        String sql = "INSERT INTO tenmo_transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
+                "VALUES (2, 2, ?, ?, ?);";
 
-        Integer newId = jdbcTemplate.queryForObject(sql, Integer.class, accountFrom, accountTo, amount);
+        jdbcTemplate.update(sql, accountFrom, accountTo, amount);
 
-        if (amount <= accountDao.getBalance(accountFrom)) {
+        if (amount <= getBalance(accountFrom)) {
 
-        sql = "UPDATE tenmo_account" +
-                        "SET balance = balance - ?" +
-                        "WHERE account_id = ?;";
+            sql = "UPDATE tenmo_account " +
+                    "SET balance = balance - ? " +
+                    "WHERE account_id = ?;";
 
-        jdbcTemplate.update(sql, amount, accountFrom);
+            jdbcTemplate.update(sql, amount, accountFrom);
 
-        sql = "UPDATE tenmo_account" +
-                "SET balance = balance + ?" +
-                "WHERE account_id = ?;";
+            sql = "UPDATE tenmo_account " +
+                    "SET balance = balance + ? " +
+                    "WHERE account_id = ?;";
 
-        jdbcTemplate.update(sql, amount, accountTo);
+            jdbcTemplate.update(sql, amount, accountTo);
+        }
     }
-        return newId;
+    @Override
+    public int getUserId(int accountId){
+            String sql = "SELECT user_id FROM tenmo_account WHERE account_id = ?;";
+            int result = jdbcTemplate.queryForObject(sql, Integer.class, accountId);
+        return result;
+
     }
 }
