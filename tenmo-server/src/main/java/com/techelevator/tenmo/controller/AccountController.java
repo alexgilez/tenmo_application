@@ -52,7 +52,7 @@ public class AccountController {
         double balance = accountDao.getBalance(accountIdA);
         String validName = accountDao.getNameById(accountIdA);
         if (!username.equals(validName)) {
-            return "error message 1";
+            return "You must use your own Account ID.";
         } else if (accountIdA == accountIdB) {
         } else if ((transferAmount > 0) && (transferAmount < balance)) {
                     accountDao.sendTransfer(accountIdA, accountIdB, transferAmount);
