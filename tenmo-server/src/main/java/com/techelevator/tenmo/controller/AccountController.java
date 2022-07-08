@@ -2,6 +2,7 @@ package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.UserDao;
+import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,6 +64,13 @@ public class AccountController {
         return "breh...you know what you did...";
     }
 
+    @RequestMapping(path = "transfer/{userId}", method = RequestMethod.GET)
+    public List<Transfer> getTransfers(@Valid @PathVariable int userId, Principal user) {
+        String username = user.getName();
+        this.userDao.findIdByUsername(username);
+        List<Transfer> transfers = accountDao.listTransfers(userId);
+        return transfers;
+    }
 
 
     //Number 4
