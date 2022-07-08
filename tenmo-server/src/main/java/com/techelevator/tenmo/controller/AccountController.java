@@ -26,10 +26,10 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/balance", method = RequestMethod.GET)
-    public double getBalance(@Valid @PathVariable int userId, Principal user){
+    public double getBalance(@Valid @PathVariable int accountId, Principal user){
         String username = user.getName();
         this.userDao.findIdByUsername(username);
-        double balance = accountDao.getBalance(userId);
+        double balance = accountDao.getBalance(accountId);
         return balance;
     }
 
@@ -44,26 +44,23 @@ public class AccountController {
     }
 
 
-    @RequestMapping(path = "transfer/{userIdA}/{userIdB}/{transferAmount}", method = RequestMethod.PUT)
-    public String executeTransfer(@Valid @PathVariable int userIdA, @Valid @PathVariable int userIdB,
-                                        double transferAmount, Principal user) {
+    @RequestMapping(path = "transfer/{accountIdA}/{accountIdB}/{transferAmount}", method = RequestMethod.PUT)
+    public String executeTransfer(@Valid @PathVariable int accountIdA, @Valid @PathVariable int accountIdB,
+                                        @Valid @PathVariable double transferAmount, Principal user) {
         String username = user.getName();
         this.userDao.findIdByUsername(username);
-        double balance = accountDao.getBalance(userIdA);
-        String validName = accountDao.getNameById(userIdA);
-        if (username.equals(validName)) {
-            return "breh...you know what you did...";
-            if (userIdA == userIdB) {
-                accountDao.rejectTransferWithSameId(userIdA, userIdB, transferAmount);
-                if ((transferAmount > 0) && (transferAmount < balance)) {
-                    accountDao.sendTransfer(userIdA, userIdB, transferAmount);
+        double balance = accountDao.getBalance(accountIdA);
+        String validName = accountDao.getNameById(accountIdA);
+        if (!username.equals(validName)) {
+            return "error message 1";
+        } else if (accountIdA == accountIdB) {
+            accountDao.rejectTransferWithSameId(accountIdA, accountIdB, transferAmount);
+        } else if ((transferAmount > 0) && (transferAmount < balance)) {
+                    accountDao.sendTransfer(accountIdA, accountIdB, transferAmount);
                     balance -= transferAmount;
-                } else {
-                    return "breh...you know what you did...";
-                }
-            }
+                    return "Your new balance is: " + balance;
         }
-        return "Your new balance is: " + balance;
+        return "breh...you know what you did...";
     }
 
 
