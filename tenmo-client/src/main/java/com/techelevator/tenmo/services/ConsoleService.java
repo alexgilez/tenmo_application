@@ -4,6 +4,7 @@ package com.techelevator.tenmo.services;
 import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ConsoleService {
@@ -50,6 +51,27 @@ public class ConsoleService {
         String username = promptForString("Username: ");
         String password = promptForString("Password: ");
         return new UserCredentials(username, password);
+    }
+
+    public boolean promptForGoodMaths() {
+
+        boolean success = false;
+
+        try {
+            Random randomizer = new Random();
+            int num1 = randomizer.nextInt(10);
+            int num2 = randomizer.nextInt(10);
+
+            System.out.println("You're not a robot if you can do good maths:");
+            System.out.println(num1 + " + " + num2 + ": ");
+            int userInput = Integer.parseInt(scanner.nextLine());
+            if (userInput == (num1 + num2)) {
+                success = true;
+            }
+        } catch (Exception e) {
+            System.out.println("Fail");
+        }
+        return success;
     }
 
     public String promptForString(String prompt) {
