@@ -12,6 +12,8 @@ public class Transfer {
     int userId;
     double balance;
 
+
+
     public int getTransferId() { return transferId; }
     public void setTransferId(int transferId) { this.transferId = transferId; }
     public int getTransferTypeId() { return transferTypeId; }
@@ -30,4 +32,5 @@ public class Transfer {
     public void setUserId(int userId) { this.userId = userId; }
     public double getBalance() { return balance; }
     public void setBalance(double balance) { this.balance = balance; }
+
 }

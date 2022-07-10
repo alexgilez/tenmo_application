@@ -5,10 +5,7 @@ import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -75,8 +72,8 @@ public class AccountController {
         return transfers;
     }
 
-    @RequestMapping(path = "transfer/{transferId}", method = RequestMethod.GET)
-    public Transfer getSelectedTransfer(@PathVariable int transferId) {
+    @RequestMapping(path = "transfer/{userId}/{transferId}", method = RequestMethod.GET)
+    public Transfer getSelectedTransfer(@Valid @PathVariable int transferId, @Valid @PathVariable int userId) {
         Transfer transfer = accountDao.transfersFromId(transferId);
         return transfer;
 

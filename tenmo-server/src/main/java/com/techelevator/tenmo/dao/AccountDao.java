@@ -24,4 +24,6 @@ public interface AccountDao {
     Transfer mapRowToTransfer(SqlRowSet rowSet);
 
     Transfer transfersFromId(int transferId);
+
+
 }
