@@ -75,6 +75,13 @@ public class AccountController {
         return transfers;
     }
 
+    @RequestMapping(path = "transfer/{transferId}", method = RequestMethod.GET)
+    public Transfer getSelectedTransfer(@PathVariable int transferId) {
+        Transfer transfer = accountDao.transfersFromId(transferId);
+        return transfer;
+
+    }
+
 
     //Number 4
     // step one -- reveal list of account_id's to send
