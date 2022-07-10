@@ -75,7 +75,8 @@ public class AccountController {
     @RequestMapping(path = "transfer/{userId}/{transferId}", method = RequestMethod.GET)
     public Transfer getSelectedTransfer(@Valid @PathVariable int userId, @Valid @PathVariable int transferId, Principal user) {
         String username = user.getName();
-        Transfer transfer = accountDao.transfersFromId(transferId);
+        this.userDao.findIdByUsername(username);
+        Transfer transfer = accountDao.transfersFromId(userId, transferId);
         return transfer;
 
     }

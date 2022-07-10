@@ -156,12 +156,12 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public Transfer transfersFromId(int transferId) {
+    public Transfer transfersFromId(int userId, int transferId) {
         new Transfer();
         Transfer transfer;
         String sql = "SELECT * " +
                 "FROM tenmo_transfer JOIN tenmo_account ON tenmo_transfer.account_from = tenmo_account.account_id " +
-                "WHERE tenmo_transfer.transfer_id = ?; ";
+                "WHERE user_id = ? AND transfer_id = ?; ";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
         if (results.next()) {
             transfer = mapRowToTransfer(results);

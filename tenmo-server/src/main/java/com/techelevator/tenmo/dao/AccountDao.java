@@ -23,7 +23,7 @@ public interface AccountDao {
 
     Transfer mapRowToTransfer(SqlRowSet rowSet);
 
-    Transfer transfersFromId(int transferId);
+    Transfer transfersFromId(int userId, int transferId);
 
 
 }
