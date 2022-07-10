@@ -60,8 +60,12 @@ public class App {
         currentUser = authenticationService.login(credentials);
         if (currentUser == null) {
             consoleService.printErrorMessage();
+        } else if (consoleService.promptForGoodMaths()) {
+            consoleService.printMainMenu();
         } else {
-            consoleService.promptForGoodMaths();
+            System.out.println("That's not good maths :(");
+            App app = new App();
+            app.run();
         }
     }
 
