@@ -24,10 +24,10 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/balance", method = RequestMethod.GET)
-    public double getBalance(@Valid @PathVariable int accountId, Principal user){
+    public double getBalance(Principal user){
         String username = user.getName();
-        this.userDao.findIdByUsername(username);
-        double balance = accountDao.getBalance(accountId);
+        int userId = this.userDao.findIdByUsername(username);
+        double balance = accountDao.getBalance(userId);
         return balance;
     }
 
@@ -64,18 +64,18 @@ public class AccountController {
         return "breh...you know what you did... you can't send money to yourself";
     }
 
-    @RequestMapping(path = "transfer/{userId}", method = RequestMethod.GET)
-    public List<Transfer> getTransfers(@Valid @PathVariable int userId, Principal user) {
+    @RequestMapping(path = "transfer", method = RequestMethod.GET)
+    public List<Transfer> getTransfers(Principal user) {
         String username = user.getName();
-        this.userDao.findIdByUsername(username);
+        int userId = this.userDao.findIdByUsername(username);
         List<Transfer> transfers = accountDao.listTransfers(userId);
         return transfers;
     }
 
-    @RequestMapping(path = "transfer/{userId}/{transferId}", method = RequestMethod.GET)
-    public Transfer getSelectedTransfer(@Valid @PathVariable int userId, @Valid @PathVariable int transferId, Principal user) {
+    @RequestMapping(path = "transfer/{transferId}", method = RequestMethod.GET)
+    public Transfer getSelectedTransfer(@Valid @PathVariable int transferId, Principal user) {
         String username = user.getName();
-        this.userDao.findIdByUsername(username);
+        int userId = this.userDao.findIdByUsername(username);
         Transfer transfer = accountDao.transfersFromId(userId, transferId);
         return transfer;
 

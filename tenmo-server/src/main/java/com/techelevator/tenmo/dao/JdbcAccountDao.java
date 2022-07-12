@@ -162,7 +162,7 @@ public class JdbcAccountDao implements AccountDao {
         String sql = "SELECT * " +
                 "FROM tenmo_transfer JOIN tenmo_account ON tenmo_transfer.account_from = tenmo_account.account_id " +
                 "WHERE user_id = ? AND transfer_id = ?; ";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, transferId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, transferId);
         if (results.next()) {
             transfer = mapRowToTransfer(results);
         } else {
